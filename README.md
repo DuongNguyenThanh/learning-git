@@ -57,6 +57,112 @@ Nếu bạn muốn commit một tập tin đó, bạn sẽ cần phải đưa t�
 
 Nhưng bạn phải nên biết rằng nếu tập tin đó đã được Tracked nhưng đang rơi vào trạng thái (Modified) thì nó vẫn sẽ không thể commit được mà bạn phải đưa nó về Staged cũng bằng lệnh git add.
 
+## Đưa một file từ staging area quay về working directory
+```
+git restore --staged <tên-file>
+```
+
+## Git branch
+```
+git branch
+```
+Hiển thị tất cả các branch đang có trong git repo của chúng ta.
+
+### Tạo branch dựa trên branch main:
+```
+git checkout -b <tên-branch>
+```
+Ví dụ: main có 3 commit, sau khi ta gọi `git checkout -b body-style` thì sẽ thêm branch mới là body-style có 3 commit đó. Nếu có commit mới thì commit đó chỉ nằm trên branch body-style chứ không động chạm gì tới branch main.
+
+### Chuyển sang branch khác
+```
+git checkout <tên-branch-khác-đã-tồn-tại>
+```
+
+## Merge
+Chúng ta nằm tại branch main
+```
+git merge <tên-branch-cần-merge>
+```
+Ví dụ: main và branch body-style
+Sau khi merge nó sẽ đưa những commit mới nhất ở trên body-style vào main
+
+Sau khi merge thì main sẽ có thêm 1 commit mới ở dưới local. Ta phải `git push` để nó up lên remote. 
+
+## Quay về phiên bản các commit trước
+Sử dụng `git log` để hiển thị ra các commit đã tạo. Nó sẽ hiển thị các commit tương ứng với các commit hash.
+
+Giờ ta muốn quay lại commit nào đó thì:
+```
+git checkout <commit-hash>
+```
+Ví dụ: `git checkout cc02f6e3754c612a34ac18cf04707e831e9675ed`
+
+Quay về phiên bản trước thì nó sẽ tạo cho chúng ta 1 branch mới. Nếu muốn quay về ban đầu thì ta chỉ việc `git checkout <branch-ban-đầu>`
+
+## Xử lý CONFLICT
+Ví dụ: 
+File ingredient.txt trên remote chỉnh sửa dòng số 4 thành abc. Dưới local ta sửa dòng số 4 thành def.
+
+Sau khi sửa dưới local ta dùng lệnh `git status` để kiểm tra.
+Sau khi kiểm tra ta dùng lệnh `git add` và `git commit` như bình thường rồi `git push`.
+Nó sẽ có kết quả như sau:
+
+<img src="images/git_push_conflict.png">
+
+Lý do là phiên bản dưới local đang có sự khác biệt so với remote nên chúng ta phải `git pull` để đưa phiên bản mới nhất trên remote về local.
+
+Khi pull về hệ thống phát hiện dòng số 4 trên remote và dòng số 4 trên local đang được chỉnh sửa. Dễ hiểu là các phiên bản đang sửa chung trên dùng 1 dòng -> do đó xảy ra confilct.
+
+<img src="images/git_pull_conflict.png">
+
+<img src="images/content_conflict.png">
+
+- HEAD là hiển thị những commit mới nhất ở trên local.
+- Phía dưới là commit ở phía trên remote.
+Nó sẽ hiển thị cho chúng ta biết là ta sẽ chọn những thay đổi ở local hay chọn những thay đổi ở trên remote.
+
+Sau khi thống nhất với người commit ở trên remote và chọn thay đổi nào thì chỉ việc xóa thay đổi kia đi là được (xóa bằng tay).
+
+<img src="images/content_change_conflict.png">
+
+Sau khi mà ta giải quyết được conflict thì ta phải tạo một commit để lưu lại cái việc giải quyết conflict này.
+
+Chúng ta gõ `git status` để kiểm tra.
+<img src="images/unmerge_conflict.png">
+
+Hệ thống báo file ingredient.txt chưa được merge (unmerge).
+
+Để merge thì đơn giản chúng ta sẽ gõ: 
+```
+git add ingredient.txt
+``` 
+rồi 
+```
+git commit -m "resolve conflict"
+```
+
+Gõ `git log` để kiểm tra ta có kết quả:
+<img src="images/git_log_conflict.png">
+
+Chúng ta sẽ có thêm 2 commit mới là commit "add ingredient" sửa thành "Hạt tiêu def" và commit "resolve conflict" để xử lý conflict giữa thằng "Update ingredients.txt" và "add ingredient".
+
+Xong xuôi ta chỉ việc `git push` là cập nhật lên remote thành công.
+
+## Gitignore
+Có những file ta không muốn hiển thị lịch sử lên trên repo thì ta sử dụng gitignore.
+
+Ví dụ ta có file mới là secret.txt:
+<img src="images/gitignore_file.png">
+
+Ta không muốn nó hiển thị lên thì ta chỉ việc tạo 1 file mới là `.gitignore` rồi thêm tên file muốn ẩn vào gitignore.
+
+<img src="images/gitignore_file_hidden.png">
+
+<img src="images/gitignore_status.png">
+
+Sau khi commit thì hệ thống chỉ lưu lại lịch sử thay đổi của file .gitignore chứ không hiển thị thay đổi của file secret.txt.
+
 ## Conventional Commits
 ### Chuẩn cấu trúc conventional commits
 ```
