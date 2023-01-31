@@ -245,3 +245,7 @@ refactor!: drop support for Node 6
 <blank line>
 BREAKING CHANGE:<space>refactor to use JavaScript features not available in Node 6.
 ```
+
+## Link tham khảo thêm
+https://www.youtube.com/watch?v=cC7vg8lWneo
+https://rpubs.com/nguyenngocbinhneu/git
